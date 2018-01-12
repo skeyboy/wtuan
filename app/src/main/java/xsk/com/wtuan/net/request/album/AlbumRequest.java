@@ -1,4 +1,4 @@
-package xsk.com.wtuan.net.request;
+package xsk.com.wtuan.net.request.album;
 
 import xsk.com.wtuan.net.JsonResultRequest;
 

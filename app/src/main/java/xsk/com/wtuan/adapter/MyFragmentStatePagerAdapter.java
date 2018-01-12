@@ -17,7 +17,7 @@ import xsk.com.wtuan.fragment.TestFragment;
  */
 
 public class MyFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
-    private String[] tabTilte;
+    protected String[] tabTilte;
     protected Map<String, Fragment> fragmentMap = new HashMap<>();
 
     public MyFragmentStatePagerAdapter(FragmentManager fm, String[] tabTitle) {
