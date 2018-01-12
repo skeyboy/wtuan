@@ -1,0 +1,67 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/btnDefault"
+    android:orientation="vertical"
+    tools:context="xsk.com.wtuan.fragment.PMBMyFragment">
+
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="我的团" />
+
+        <GridView
+            android:id="@+id/pmb_gride"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="55dp"
+            android:numColumns="3"
+            android:verticalSpacing="5dp">
+
+        </GridView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="猜你喜欢" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:text="更多>>>" />
+
+            </RelativeLayout>
+
+            <ListView
+                android:id="@+id/pmb_my"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            </ListView>
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+
+
+</LinearLayout>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="xsk.com.wtuan.activity.CreateActivity">
+    <ImageView
+        android:clickable="true"
+        android:onClick="choiceLogo"
+        android:id="@+id/create_logo"
+        android:layout_marginTop="45dp"
+        android:layout_marginBottom="25dp"
+        android:layout_width="45dp"
+        android:layout_gravity="center_horizontal"
+        android:src="@mipmap/ic_launcher_round"
+        android:layout_height="45dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="名称:" />
+
+        <EditText
+            android:id="@+id/create_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="输入要创建的社团名称" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="地址:" />
+
+        <EditText
+            android:id="@+id/create_addr"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="输入社团活动场所" />
+    </LinearLayout>
+    <EditText
+        android:id="@+id/create_desc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:gravity="left|top"
+        android:hint="输入社团描述"
+        android:inputType="textMultiLine"
+        android:minLines="4" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:height="45dp"
+        android:clickable="true"
+        android:onClick="createT"
+        android:gravity="center"
+        android:background="@color/green"
+        android:text="创建" />
+</LinearLayout>
