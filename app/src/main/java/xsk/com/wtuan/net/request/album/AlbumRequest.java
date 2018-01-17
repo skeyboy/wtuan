@@ -9,6 +9,6 @@ import xsk.com.wtuan.net.JsonResultRequest;
 public class AlbumRequest extends JsonResultRequest {
     @Override
     public String apiSmallURI() {
-        return "/tuan/album/list";
+        return "album/getAlbumList";
     }
 }

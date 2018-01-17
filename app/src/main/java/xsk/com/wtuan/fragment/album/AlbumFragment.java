@@ -1,27 +1,38 @@
 package xsk.com.wtuan.fragment.album;
 
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 
+import okhttp3.Response;
 import xsk.com.wtuan.R;
 import xsk.com.wtuan.activity.AlbumDetailActivity;
 import xsk.com.wtuan.adapter.AlbunAdapter;
+import xsk.com.wtuan.bean.RequestResultBean;
 import xsk.com.wtuan.bean.album.AlbumResultBean;
+import xsk.com.wtuan.net.JsonResultRequest;
+import xsk.com.wtuan.net.request.album.AlbumCreateRequest;
+import xsk.com.wtuan.net.request.album.AlbumRequest;
+import xsk.com.wtuan.utils.Utils;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -30,12 +41,62 @@ public class AlbumFragment extends Fragment {
     GridView albumGride;
     AlbunAdapter albunAdapter;
 
+    EditText albumName;
+    TextView albumCreat;
+    Switch albumPrivate;
+
+
     public AlbumFragment() {
         // Required empty public constructor
     }
 
+    private void toast(final String msg) {
+        Activity activity = (Activity) getContext();
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
     protected void initView(View view) {
         albumGride = view.findViewById(R.id.album_grade);
+        albumCreat = view.findViewById(R.id.album_create);
+        albumName = view.findViewById(R.id.album_name);
+        albumPrivate = view.findViewById(R.id.album_private);
+        if (Utils.isEmpty(albumName)) {
+
+        }else {
+            albumCreat.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    AlbumCreateRequest createRequest = new AlbumCreateRequest();
+                    boolean isPrive = albumPrivate.isChecked();
+                    int right = 0;
+                    if (isPrive) {
+                        right = 1;
+                    }
+                    String imgFilePath = Environment.getExternalStorageDirectory().toString()
+                            + "/DCIM/Camera/a.jpg";
+
+                    createRequest.create("91e65d721bc7fe4d4decd764c32d23db", albumName.getText().toString(), right, imgFilePath, new AlbumCreateRequest.UploadREsult() {
+                        @Override
+                        public void onSuccess(Response response) {
+                            toast(response.toString());
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+
+                            toast(e.getLocalizedMessage());
+                        }
+                    });
+                }
+            });
+        }
+
+
         albunAdapter = new AlbunAdapter(getContext());
         albumGride.setAdapter(albunAdapter);
         albumGride.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -172,26 +233,30 @@ public class AlbumFragment extends Fragment {
                 "}";
         try {
             Gson gson = new GsonBuilder().create();
-            AlbumResultBean requestResultBean = (AlbumResultBean) gson.fromJson(json, AlbumResultBean.class);
-            albunAdapter.add(requestResultBean.data.data);
-            albunAdapter.notifyDataSetChanged();
+//            AlbumResultBean requestResultBean = (AlbumResultBean) gson.fromJson(json, AlbumResultBean.class);
+//            albunAdapter.add(requestResultBean.data.data);
+//            albunAdapter.notifyDataSetChanged();
         } catch (JsonSyntaxException e) {
             e.printStackTrace();
         }
 
-//        AlbumRequest request = new AlbumRequest();
+        AlbumRequest request = new AlbumRequest();
 
-        //        request.get(AlbumResultBean.class, new JsonResultRequest.OnBeanResult() {
-//            @Override
-//            public void onSuccess(RequestResultBean bean) {
-//
-//            }
-//
-//            @Override
-//            public void onFailure(Exception e) {
-//
-//            }
-//        });
+                request.get(AlbumResultBean.class, new JsonResultRequest.OnBeanResult() {
+            @Override
+            public void onSuccess(RequestResultBean bean) {
+                if (albunAdapter != null) {
+                    AlbumResultBean resultBean;
+                    resultBean = (AlbumResultBean) bean;
+                    albunAdapter.add(resultBean.data.data);
+                }
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+
+            }
+        });
     }
 
     @Override

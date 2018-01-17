@@ -17,15 +17,21 @@ import xsk.com.wtuan.utils.Result;
  */
 
 public abstract class PMBRequest {
-    private String API = "http://127.0.0.1:1004/api/v1/";
+//    private String API = "http://127.0.0.1:1004/api/v1/";
+    public static final String API = "http://api.xiangshike.com/api/v1/";
     private Map<String, String> paramaters;
 
     public abstract String apiSmallURI();
+
+    private String debugToken() {
+        return "&api_token=91e65d721bc7fe4d4decd764c32d23db";
+    }
+
     protected void get(  final Result result) {
         result.onStart();
         OkHttpClient client = new OkHttpClient();
         final Request request = new Request.Builder()
-                .url(API + apiSmallURI())
+                .url(API + apiSmallURI()+debugToken())
                 .build();
         client.newCall(request).enqueue(new Callback() {
             @Override
@@ -84,7 +90,6 @@ public abstract class PMBRequest {
 
     /**
      * http://127.0.0.1:1004/api/v1/register/doReg
-     * @param url = register/doReg
      * @param paramaters
      * @param result
      */

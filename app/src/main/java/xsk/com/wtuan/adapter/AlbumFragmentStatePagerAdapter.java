@@ -3,6 +3,7 @@ package xsk.com.wtuan.adapter;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 
+import xsk.com.wtuan.fragment.Essence.EssenceFragment;
 import xsk.com.wtuan.fragment.manager.ManagerFragment;
 import xsk.com.wtuan.fragment.album.AlbumFragment;
 
@@ -29,6 +30,10 @@ public class AlbumFragmentStatePagerAdapter extends MyFragmentStatePagerAdapter 
             return tmp;
         }
         switch (position) {
+
+            case 1:
+                tmp = new EssenceFragment();
+                break;
 
             default:
                 tmp = new AlbumFragment();

@@ -8,8 +8,10 @@ public class Album {
     public int id;
     public String name;
     public String cover;
-    public int tuanId;
-    public long addTime;
-    public Object updateTime;
+//    public int userId;
+//    public long addTime;
+//    public long updateTime;
+//    public int isPrivate;
+
 
 }

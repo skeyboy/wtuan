@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="xsk.com.wtuan.fragment.album.AlbumFragment">
 
     <GridView
@@ -10,5 +11,48 @@
         android:layout_height="match_parent"
         android:horizontalSpacing="10dp"
         android:numColumns="2"
-        android:verticalSpacing="10dp"></GridView>
+        android:verticalSpacing="10dp"
+        android:visibility="gone"></GridView>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="75dp"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/album_cover"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_gravity="center_horizontal"
+            android:src="@mipmap/ic_launcher" />
+
+        <EditText
+            android:id="@id/album_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="15dp"
+            android:hint="输入相册名称" />
+
+        <Switch
+            android:id="@+id/album_private"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:checked="true"
+            android:text="公开" />
+
+        <TextView
+            android:id="@+id/album_create"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="15dp"
+            android:background="@color/green"
+            android:clickable="true"
+            android:gravity="center"
+            android:minHeight="45dp"
+            android:text="创建" />
+    </LinearLayout>
 </LinearLayout>
