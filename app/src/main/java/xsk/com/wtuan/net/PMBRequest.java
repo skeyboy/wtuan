@@ -1,5 +1,7 @@
 package xsk.com.wtuan.net;
 
+import android.util.Log;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
@@ -17,21 +19,28 @@ import xsk.com.wtuan.utils.Result;
  */
 
 public abstract class PMBRequest {
-//    private String API = "http://127.0.0.1:1004/api/v1/";
+    //    private String API = "http://127.0.0.1:1004/api/v1/";
     public static final String API = "http://api.xiangshike.com/api/v1/";
+    public static final String token = "91e65d721bc7fe4d4decd764c32d23db";
     private Map<String, String> paramaters;
 
     public abstract String apiSmallURI();
 
-    private String debugToken() {
+    protected String debugToken() {
         return "&api_token=91e65d721bc7fe4d4decd764c32d23db";
     }
 
     protected void get(  final Result result) {
         result.onStart();
         OkHttpClient client = new OkHttpClient();
+
+        String url = API + apiSmallURI();
+        if (!url.endsWith("?")) {
+            url += "?" + debugToken();
+        }
+        Log.d("url", url);
         final Request request = new Request.Builder()
-                .url(API + apiSmallURI()+debugToken())
+                .url(url)
                 .build();
         client.newCall(request).enqueue(new Callback() {
             @Override

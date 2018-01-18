@@ -2,6 +2,9 @@ package xsk.com.wtuan.activity;
 
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -10,13 +13,18 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
+import com.zhihu.matisse.Matisse;
+import com.zhihu.matisse.MimeType;
+import com.zhihu.matisse.engine.impl.PicassoEngine;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,8 +33,11 @@ import java.util.Map;
 
 import xsk.com.wtuan.R;
 import xsk.com.wtuan.bean.RequestResultBean;
+import xsk.com.wtuan.bean.file.FileResultBean;
 import xsk.com.wtuan.net.JsonResultRequest;
+import xsk.com.wtuan.net.request.album.AlbumAddPicRequest;
 import xsk.com.wtuan.net.request.album.AlbumCoverChangeRequest;
+import xsk.com.wtuan.utils.Utils;
 
 /**
  * 查看相册内容
@@ -34,6 +45,68 @@ import xsk.com.wtuan.net.request.album.AlbumCoverChangeRequest;
 public class AlbumDetailActivity extends AppCompatActivity {
     ViewPager albumViewPager;
     AlbumStateAdapter adapter;
+    private static final int REQUEST_CODE_CHOOSE = 23;//定义请求码常量
+
+    public void uploadPhotos(View view) {
+        Matisse.from(this)
+                .choose(MimeType.allOf())//照片视频全部显示
+                .countable(true)//有序选择图片
+                .maxSelectable(9)//最大选择数量为9
+                .gridExpectedSize(120)//图片显示表格的大小getResources()
+
+//                .getDimensionPixelSize(R.dimen.grid_expected_size)
+                .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)//图像选择和预览活动所需的方向。
+                .thumbnailScale(0.85f)//缩放比例
+                .theme(R.style.Matisse_Zhihu)//主题  暗色主题 R.style.Matisse_Dracula
+                .imageEngine(new PicassoEngine())//加载方式
+                .forResult(REQUEST_CODE_CHOOSE);//请求码
+    }
+
+    List<Uri> mSelected;
+
+    @Override      //接收返回的地址
+    protected void onActivityResult(final int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_CHOOSE && resultCode == RESULT_OK) {
+            mSelected = Matisse.obtainResult(data);
+            Log.d("Matisse", "mSelected: " + mSelected);
+            for (final Uri uri : mSelected) {
+
+                Utils.fileUpload(uri.getPath(), new Utils.Upload() {
+                    @Override
+                    public void onSuccess(FileResultBean response) {
+                        Log.d(response.msg, response.toString());
+                        Toast.makeText(AlbumDetailActivity.this, response.toString(), Toast.LENGTH_SHORT)
+                                .show();
+                        AlbumAddPicRequest request = new AlbumAddPicRequest();
+                        int albumId = getIntent().getIntExtra("albumId", 0);
+                        HashMap<String, String> paramaters = new HashMap<>();
+                        paramaters.put("albumId", String.valueOf(albumId));
+                        paramaters.put("albumId", String.valueOf(albumId));
+                        paramaters.put("pics", Utils.join(",", response.data.path));
+
+                        request.post(paramaters, RequestResultBean.class, new JsonResultRequest.OnBeanResult() {
+                            @Override
+                            public void onSuccess(RequestResultBean bean) {
+
+                            }
+
+                            @Override
+                            public void onFailure(Exception e) {
+
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onFailure() {
+
+                    }
+                });
+
+            }
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -144,12 +217,12 @@ class AlbumInnerFragment extends Fragment {
 
                             }
                         })
-                .setPositiveButton("取消", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
+                        .setPositiveButton("取消", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
 
-                    }
-                });
+                            }
+                        });
                 builder.create().show();
                 return false;
             }
@@ -159,6 +232,7 @@ class AlbumInnerFragment extends Fragment {
 
     /**
      * 使用相册中的图片作为封面
+     *
      * @param paramters
      */
     protected void changeAlbumCover(Map<String, Object> paramters) {

@@ -1,6 +1,5 @@
 package xsk.com.wtuan.adapter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.view.LayoutInflater;
@@ -17,6 +16,7 @@ import java.util.List;
 
 import xsk.com.wtuan.R;
 import xsk.com.wtuan.bean.album.Album;
+import xsk.com.wtuan.utils.Utils;
 
 /**
  * Created by liyulong on 2018/1/10.
@@ -39,12 +39,17 @@ public class AlbunAdapter extends BaseAdapter {
             this.albums = new ArrayList<>();
         }
         this.albums.addAll(albums);
-        ((Activity) context).runOnUiThread(new Runnable() {
+        Utils.runOnUiThread(context, new Runnable() {
             @Override
             public void run() {
                 notifyDataSetChanged();
             }
         });
+//        ((Activity) context).runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
+//            }
+//        });
     }
 
     @Override

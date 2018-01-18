@@ -19,15 +19,14 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonSyntaxException;
+import java.io.IOException;
 
 import okhttp3.Response;
 import xsk.com.wtuan.R;
 import xsk.com.wtuan.activity.AlbumDetailActivity;
 import xsk.com.wtuan.adapter.AlbunAdapter;
 import xsk.com.wtuan.bean.RequestResultBean;
+import xsk.com.wtuan.bean.album.Album;
 import xsk.com.wtuan.bean.album.AlbumResultBean;
 import xsk.com.wtuan.net.JsonResultRequest;
 import xsk.com.wtuan.net.request.album.AlbumCreateRequest;
@@ -60,14 +59,15 @@ public class AlbumFragment extends Fragment {
         });
 
     }
-    protected void initView(View view) {
+
+    protected void initView(final View view) {
         albumGride = view.findViewById(R.id.album_grade);
         albumCreat = view.findViewById(R.id.album_create);
         albumName = view.findViewById(R.id.album_name);
         albumPrivate = view.findViewById(R.id.album_private);
         if (Utils.isEmpty(albumName)) {
 
-        }else {
+        } else {
             albumCreat.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -80,10 +80,17 @@ public class AlbumFragment extends Fragment {
                     String imgFilePath = Environment.getExternalStorageDirectory().toString()
                             + "/DCIM/Camera/a.jpg";
 
+
                     createRequest.create("91e65d721bc7fe4d4decd764c32d23db", albumName.getText().toString(), right, imgFilePath, new AlbumCreateRequest.UploadREsult() {
                         @Override
                         public void onSuccess(Response response) {
-                            toast(response.toString());
+                            try {
+                               String res = response.body().string();
+                                toast(res+"成功");
+
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
                         }
 
                         @Override
@@ -103,6 +110,8 @@ public class AlbumFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent intent = new Intent(getContext(), AlbumDetailActivity.class);
+                Album album = (Album) adapterView.getItemAtPosition(i);
+                intent.putExtra("albumId", album.id);
                 getContext().startActivity(intent);
             }
         });
@@ -131,132 +140,42 @@ public class AlbumFragment extends Fragment {
             }
         });
 
-        String json = "{\n" +
-                "    \"code\": 0,\n" +
-                "    \"msg\": \"success\",\n" +
-                "    \"data\": {\n" +
-                "        \"currentPage\": 1,\n" +
-                "        \"data\": [\n" +
-                "            {\n" +
-                "                \"id\": 9,\n" +
-                "                \"name\": \"1111\",\n" +
-                "                \"cover\": \"\",\n" +
-                "                \"tuanId\": 1,\n" +
-                "                \"addTime\": 1515393164,\n" +
-                "                \"private\": 0,\n" +
-                "                \"updateTime\": \"\"\n" +
-                "            },\n" +
-                "            {\n" +
-                "                \"id\": 8,\n" +
-                "                \"name\": \"1111\",\n" +
-                "                \"cover\": \"\",\n" +
-                "                \"tuanId\": 1,\n" +
-                "                \"addTime\": 1515392575,\n" +
-                "                \"private\": 0,\n" +
-                "                \"updateTime\": \"\"\n" +
-                "            },\n" +
-                "            {\n" +
-                "                \"id\": 7,\n" +
-                "                \"name\": \"1111\",\n" +
-                "                \"cover\": \"\",\n" +
-                "                \"tuanId\": 1,\n" +
-                "                \"addTime\": 1515392575,\n" +
-                "                \"private\": 0,\n" +
-                "                \"updateTime\": \"\"\n" +
-                "            },\n" +
-                "            {\n" +
-                "                \"id\": 6,\n" +
-                "                \"name\": \"1111\",\n" +
-                "                \"cover\": \"\",\n" +
-                "                \"tuanId\": 1,\n" +
-                "                \"addTime\": 1515392575,\n" +
-                "                \"private\": 0,\n" +
-                "                \"updateTime\": \"\"\n" +
-                "            },\n" +
-                "            {\n" +
-                "                \"id\": 5,\n" +
-                "                \"name\": \"1111\",\n" +
-                "                \"cover\": \"\",\n" +
-                "                \"tuanId\": 1,\n" +
-                "                \"addTime\": 1515392502,\n" +
-                "                \"private\": \"\",\n" +
-                "                \"updateTime\": \"\"\n" +
-                "            },\n" +
-                "            {\n" +
-                "                \"id\": 4,\n" +
-                "                \"name\": \"1111\",\n" +
-                "                \"cover\": \"\",\n" +
-                "                \"tuanId\": 1,\n" +
-                "                \"addTime\": 1515392502,\n" +
-                "                \"private\": \"\",\n" +
-                "                \"updateTime\": \"\"\n" +
-                "            },\n" +
-                "            {\n" +
-                "                \"id\": 3,\n" +
-                "                \"name\": \"1111\",\n" +
-                "                \"cover\": \"\",\n" +
-                "                \"tuanId\": 1,\n" +
-                "                \"addTime\": 1515392501,\n" +
-                "                \"private\": \"\",\n" +
-                "                \"updateTime\": \"\"\n" +
-                "            },\n" +
-                "            {\n" +
-                "                \"id\": 2,\n" +
-                "                \"name\": \"1111\",\n" +
-                "                \"cover\": \"\",\n" +
-                "                \"tuanId\": 1,\n" +
-                "                \"addTime\": 1515392497,\n" +
-                "                \"private\": \"\",\n" +
-                "                \"updateTime\": \"\"\n" +
-                "            },\n" +
-                "            {\n" +
-                "                \"id\": 1,\n" +
-                "                \"name\": \"1111\",\n" +
-                "                \"cover\": \"1111\",\n" +
-                "                \"tuanId\": 1,\n" +
-                "                \"addTime\": 1515392451,\n" +
-                "                \"private\": \"\",\n" +
-                "                \"updateTime\": 1515394052\n" +
-                "            }\n" +
-                "        ],\n" +
-                "        \"firstPageUrl\": \"http://127.0.0.1:1004/api/v1/tuan/album/list?page=1\",\n" +
-                "        \"from\": 1,\n" +
-                "        \"lastPage\": 1,\n" +
-                "        \"lastPageUrl\": \"http://127.0.0.1:1004/api/v1/tuan/album/list?page=1\",\n" +
-                "        \"nextPageUrl\": \"\",\n" +
-                "        \"path\": \"http://127.0.0.1:1004/api/v1/tuan/album/list\",\n" +
-                "        \"perPage\": 15,\n" +
-                "        \"prevPageUrl\": \"\",\n" +
-                "        \"to\": 9,\n" +
-                "        \"total\": 9\n" +
-                "    }\n" +
-                "}";
+
+
         try {
-            Gson gson = new GsonBuilder().create();
-//            AlbumResultBean requestResultBean = (AlbumResultBean) gson.fromJson(json, AlbumResultBean.class);
-//            albunAdapter.add(requestResultBean.data.data);
-//            albunAdapter.notifyDataSetChanged();
-        } catch (JsonSyntaxException e) {
+            AlbumRequest request = new AlbumRequest();
+
+            request.get(AlbumResultBean.class, new JsonResultRequest.OnBeanResult() {
+                @Override
+                public void onSuccess(final RequestResultBean bean) {
+                    if (albunAdapter != null) {
+
+                        Activity activity = (Activity) getContext();
+
+                        activity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                AlbumResultBean resultBean;
+                                resultBean = (AlbumResultBean) bean;
+                                albunAdapter.add(resultBean.data.data);
+                                if (resultBean.data.data.size() > 0) {
+                                    view.findViewById(R.id.album_create_view).setVisibility(View.GONE);
+                                    view.findViewById(R.id.album_grade).setVisibility(View.VISIBLE);
+                                }
+                            }
+                        });
+
+                    }
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+
+                }
+            });
+        } catch (Exception e) {
             e.printStackTrace();
         }
-
-        AlbumRequest request = new AlbumRequest();
-
-                request.get(AlbumResultBean.class, new JsonResultRequest.OnBeanResult() {
-            @Override
-            public void onSuccess(RequestResultBean bean) {
-                if (albunAdapter != null) {
-                    AlbumResultBean resultBean;
-                    resultBean = (AlbumResultBean) bean;
-                    albunAdapter.add(resultBean.data.data);
-                }
-            }
-
-            @Override
-            public void onFailure(Exception e) {
-
-            }
-        });
     }
 
     @Override

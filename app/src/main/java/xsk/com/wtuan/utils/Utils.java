@@ -1,20 +1,30 @@
 package xsk.com.wtuan.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
+import xsk.com.wtuan.bean.file.FileResultBean;
 import xsk.com.wtuan.global.PMBApplication;
+import xsk.com.wtuan.net.PMBRequest;
 
 /**
  * Created by liyulong on 2018/1/8.
@@ -101,5 +111,61 @@ public class Utils {
         Context context = app.getApplicationContext();
         SharedPreferences preferences = context.getSharedPreferences(kStore, Context.MODE_PRIVATE);
         return preferences.getString("pwd", "");
+    }
+
+    public static void runOnUiThread(Context context, Runnable runnable) {
+        Activity activity = (Activity) context;
+        activity.runOnUiThread(runnable);
+    }
+
+    public static void fileUpload(String path, final Upload upload) {
+        File f = new File(path);
+        MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
+        builder.addFormDataPart("img", f.getName(), RequestBody.create(MediaType.parse("image/*"), f));
+
+
+        OkHttpClient client = new OkHttpClient();
+
+        final Request request = new Request.Builder()
+                .url(PMBRequest.API + "file")//地址
+                .post(builder.build())//添加请求体
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                upload.onFailure();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) {
+                try {
+                    String json = response.body().string();
+                    Gson gson = new GsonBuilder().create();
+                    FileResultBean bean = gson.fromJson(json, FileResultBean.class);
+                    upload.onSuccess(bean);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    upload.onFailure();
+                }
+
+            }
+        });
+    }
+
+    public static String join(String sep, String... values) {
+        StringBuffer buffer = new StringBuffer();
+        for (String pic : values) {
+            buffer.append(pic + ",");
+        }
+
+        return buffer.substring(0, buffer.substring(0).length() - 1);
+    }
+
+    public interface Upload {
+        void onSuccess(FileResultBean response);
+
+        void onFailure();
     }
 }
