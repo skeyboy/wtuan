@@ -7,10 +7,14 @@ package xsk.com.wtuan.bean.tuan;
 public class Tuan {
     public String name;
     public int id;
-    public String cover;
-    public String tuanId;
+    public int schoolId;
+    public int userId;
+    public String logo;
+    public String description;
+    public int categoryId;
     public long addTime;
-    public long updateTime ;
+
+
 }
 
 

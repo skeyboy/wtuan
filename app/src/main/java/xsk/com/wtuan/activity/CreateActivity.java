@@ -9,25 +9,22 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.zhihu.matisse.Matisse;
 import com.zhihu.matisse.MimeType;
 import com.zhihu.matisse.engine.impl.PicassoEngine;
 
-import java.io.File;
-import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
 import xsk.com.wtuan.R;
+import xsk.com.wtuan.bean.RequestResultBean;
+import xsk.com.wtuan.bean.file.FileResultBean;
+import xsk.com.wtuan.net.JsonResultRequest;
+import xsk.com.wtuan.net.request.TuanCreateRequest;
+import xsk.com.wtuan.utils.Utils;
 
 
 public class CreateActivity extends AppCompatActivity {
@@ -52,7 +49,7 @@ public class CreateActivity extends AppCompatActivity {
 
     public void choiceLogo(View view) {
         Matisse.from(CreateActivity.this)
-                .choose(MimeType.of(MimeType.PNG)) // 选择 mime 的类型
+                .choose(MimeType.allOf()) // 选择 mime 的类型
                 .countable(true)
                 .maxSelectable(1) // 图片选择的最多数量
 //                .gridExpectedSize(getResources().getDimensionPixelSize(R.dimen.grid_expected_size))
@@ -78,33 +75,42 @@ public class CreateActivity extends AppCompatActivity {
     }
 
     public void createT(View view) {
-        File f = new File("");
-
-        MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
-        builder.addFormDataPart("img", f.getName(), RequestBody.create(MediaType.parse("image/*"), f));
-
-        builder.addFormDataPart("name", nameV.getText().toString());
-        builder.addFormDataPart("description", descV.getText().toString());
-        builder.addFormDataPart("logo", addrV.getText().toString());
-
-
-        OkHttpClient client = new OkHttpClient();
-
-        Request request = new Request.Builder()
-                .url("")//地址
-                .post(builder.build())//添加请求体
-                .build();
-        client.newCall(request).enqueue(new Callback() {
+        if (logUri == null) {
+            Toast.makeText(this, "请选择对应的社团图标", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Utils.fileUpload(this, logUri, new Utils.Upload() {
             @Override
-            public void onFailure(Call call, IOException e) {
+            public void onSuccess(FileResultBean response) {
+                HashMap<String, String> paramaters = new HashMap<>();
+                paramaters.put("name", nameV.getText().toString());
+                paramaters.put("description", descV.getText().toString());
+                paramaters.put("logo", response.data.path);
+                paramaters.put("category_id", "1");
 
+                TuanCreateRequest request = new TuanCreateRequest();
+                request.post(paramaters, RequestResultBean.class, new JsonResultRequest.OnBeanResult() {
+                    @Override
+                    public void onSuccess(final RequestResultBean bean) {
+                       runOnUiThread(new Runnable() {
+                           @Override
+                           public void run() {
+                               Toast.makeText(CreateActivity.this, bean.toString(), Toast.LENGTH_SHORT).show();
+                           }
+                       });
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) {
+
+                    }
+                });
             }
 
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
+            public void onFailure() {
 
             }
         });
-
     }
 }

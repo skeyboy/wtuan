@@ -4,8 +4,10 @@ import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -35,6 +37,7 @@ import xsk.com.wtuan.R;
 import xsk.com.wtuan.bean.RequestResultBean;
 import xsk.com.wtuan.bean.file.FileResultBean;
 import xsk.com.wtuan.net.JsonResultRequest;
+import xsk.com.wtuan.net.PMBRequest;
 import xsk.com.wtuan.net.request.album.AlbumAddPicRequest;
 import xsk.com.wtuan.net.request.album.AlbumCoverChangeRequest;
 import xsk.com.wtuan.utils.Utils;
@@ -72,23 +75,46 @@ public class AlbumDetailActivity extends AppCompatActivity {
             Log.d("Matisse", "mSelected: " + mSelected);
             for (final Uri uri : mSelected) {
 
-                Utils.fileUpload(uri.getPath(), new Utils.Upload() {
+                String[] proj = {MediaStore.Images.Media.DATA};
+                Cursor actualimagecursor = this.managedQuery(uri, proj, null, null, null);
+                int actual_image_column_index = actualimagecursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                actualimagecursor.moveToFirst();
+
+
+                String img_path = actualimagecursor.getString(actual_image_column_index);
+
+
+                Utils.fileUpload(img_path, new Utils.Upload() {
                     @Override
-                    public void onSuccess(FileResultBean response) {
+                    public void onSuccess(final FileResultBean response) {
                         Log.d(response.msg, response.toString());
-                        Toast.makeText(AlbumDetailActivity.this, response.toString(), Toast.LENGTH_SHORT)
-                                .show();
-                        AlbumAddPicRequest request = new AlbumAddPicRequest();
+                        Utils.runOnUiThread(AlbumDetailActivity.this, new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(AlbumDetailActivity.this, response.toString(), Toast.LENGTH_SHORT)
+                                        .show();
+                            }
+                        });
+
                         int albumId = getIntent().getIntExtra("albumId", 0);
+
                         HashMap<String, String> paramaters = new HashMap<>();
                         paramaters.put("albumId", String.valueOf(albumId));
-                        paramaters.put("albumId", String.valueOf(albumId));
+                        paramaters.put("api_token", PMBRequest.token);
                         paramaters.put("pics", Utils.join(",", response.data.path));
+
+                        AlbumAddPicRequest request = new AlbumAddPicRequest();
+
 
                         request.post(paramaters, RequestResultBean.class, new JsonResultRequest.OnBeanResult() {
                             @Override
-                            public void onSuccess(RequestResultBean bean) {
-
+                            public void onSuccess(final RequestResultBean bean) {
+                                Utils.runOnUiThread(AlbumDetailActivity.this, new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(AlbumDetailActivity.this, bean.toString(), Toast.LENGTH_SHORT).show();
+                                    }
+                                });
                             }
 
                             @Override

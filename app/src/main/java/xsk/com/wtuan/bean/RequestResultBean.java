@@ -7,4 +7,12 @@ package xsk.com.wtuan.bean;
 public class RequestResultBean {
     public int code;
     public String msg;
+
+    @Override
+    public String toString() {
+        return "RequestResultBean{" +
+                "code=" + code +
+                ", msg='" + msg + '\'' +
+                '}';
+    }
 }

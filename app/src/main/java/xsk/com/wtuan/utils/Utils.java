@@ -3,6 +3,9 @@ package xsk.com.wtuan.utils;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -118,6 +121,17 @@ public class Utils {
         activity.runOnUiThread(runnable);
     }
 
+    public static void fileUpload(Context context, Uri uri, final Upload upload) {
+        String[] proj = {MediaStore.Images.Media.DATA};
+        Cursor actualimagecursor = ((Activity) context).managedQuery(uri, proj, null, null, null);
+        int actual_image_column_index = actualimagecursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        actualimagecursor.moveToFirst();
+
+
+        String img_path = actualimagecursor.getString(actual_image_column_index);
+        fileUpload(img_path, upload);
+
+    }
     public static void fileUpload(String path, final Upload upload) {
         File f = new File(path);
         MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
@@ -168,4 +182,6 @@ public class Utils {
 
         void onFailure();
     }
+
+    public static final String Res_HOST = "http://api.xiangshike.com";
 }

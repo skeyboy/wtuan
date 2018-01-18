@@ -8,4 +8,13 @@ import xsk.com.wtuan.bean.RequestResultBean;
 
 public class FileResultBean extends RequestResultBean {
     public FileBean data;
+
+    @Override
+    public String toString() {
+        return "FileResultBean{" +
+                "code=" + code +
+                ", msg='" + msg + '\'' +
+                ", data=" + data +
+                '}';
+    }
 }

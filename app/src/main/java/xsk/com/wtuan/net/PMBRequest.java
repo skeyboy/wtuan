@@ -109,6 +109,8 @@ public abstract class PMBRequest {
                 paramaters.keySet()) {
             builder.add(key, paramaters.get(key));
         }
+        builder.add("api_token", token);
+
         OkHttpClient client = new OkHttpClient();
         final Request request = new Request.Builder()
                 .url(API + apiSmallURI())
@@ -116,6 +118,7 @@ public abstract class PMBRequest {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
+
                 result.onFailure(e);
             }
 

@@ -8,4 +8,11 @@ import xsk.com.wtuan.bean.RequestResultBean;
 
 public class RequestTuanResultBean extends RequestResultBean {
     public TuanData data;
+
+    @Override
+    public String toString() {
+        return "RequestTuanResultBean{" +
+                "data=" + data +
+                '}';
+    }
 }

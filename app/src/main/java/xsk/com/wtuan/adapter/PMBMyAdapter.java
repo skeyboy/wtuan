@@ -5,12 +5,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import xsk.com.wtuan.R;
 import xsk.com.wtuan.bean.tuan.Tuan;
+import xsk.com.wtuan.utils.Utils;
 
 /**
  * Created by liyulong on 2018/1/10.
@@ -52,7 +57,13 @@ public class PMBMyAdapter extends BaseAdapter {
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
         View rootView = LayoutInflater.from(context).inflate(R.layout.adapter_pmb_my, viewGroup, false);
+        CircleImageView circleImageView = rootView.findViewById(R.id.tuan_cover);
+        TextView nameV = rootView.findViewById(R.id.tuan_name);
 
+        Tuan tuan = tuans.get(i);
+
+        Picasso.with(context).load(Utils.Res_HOST+tuan.logo).placeholder(R.drawable.ic_empty_zhihu).into(circleImageView);
+        nameV.setText(tuan.name);
 
         return rootView;
     }

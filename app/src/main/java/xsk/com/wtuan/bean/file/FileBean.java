@@ -8,4 +8,13 @@ public class FileBean {
     public String originName;
     public String name;
     public String path;
+
+    @Override
+    public String toString() {
+        return "FileBean{" +
+                "originName='" + originName + '\'' +
+                ", name='" + name + '\'' +
+                ", path='" + path + '\'' +
+                '}';
+    }
 }
