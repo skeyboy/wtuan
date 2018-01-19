@@ -1,22 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="50dp"
+    android:layout_height="wrap_content"
     android:gravity="center_vertical"
+    android:minHeight="75dp"
     android:orientation="horizontal">
 
     <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/tuan_cover"
         android:layout_width="45dp"
         android:layout_height="45dp"
-        android:id="@+id/tuan_cover"
         android:src="@mipmap/ic_launcher" />
 
     <LinearLayout
         android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:layout_height="match_parent"
-        android:weightSum="4"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:weightSum="4">
 
         <TextView
             android:id="@+id/tuan_name"
@@ -24,11 +25,17 @@
             android:layout_height="wrap_content"
             android:text="爱搞基" />
 
+        <TextView
+            android:id="@+id/tuan_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="团描述" />
+
         <LinearLayout
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
             android:weightSum="4">
 
             <TextView
@@ -56,8 +63,9 @@
                 android:text="200" />
         </LinearLayout>
     </LinearLayout>
+
     <Button
         android:layout_width="wrap_content"
-        android:text="关注"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:text="关注" />
 </LinearLayout>

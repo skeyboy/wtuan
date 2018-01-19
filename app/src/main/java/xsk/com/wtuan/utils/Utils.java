@@ -7,10 +7,12 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,6 +27,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import xsk.com.wtuan.R;
 import xsk.com.wtuan.bean.file.FileResultBean;
 import xsk.com.wtuan.global.PMBApplication;
 import xsk.com.wtuan.net.PMBRequest;
@@ -132,6 +135,7 @@ public class Utils {
         fileUpload(img_path, upload);
 
     }
+
     public static void fileUpload(String path, final Upload upload) {
         File f = new File(path);
         MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
@@ -175,6 +179,14 @@ public class Utils {
         }
 
         return buffer.substring(0, buffer.substring(0).length() - 1);
+    }
+
+    public static void picasso(Context context,String url, ImageView view) {
+        Picasso.with(context)
+                .load(Res_HOST + url)
+//                .resize(view.getWidth(), view.getHeight())
+                .placeholder(R.drawable.ic_empty_zhihu)
+                .into(view);
     }
 
     public interface Upload {

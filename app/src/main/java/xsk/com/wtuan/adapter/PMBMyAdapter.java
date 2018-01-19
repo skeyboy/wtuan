@@ -59,12 +59,13 @@ public class PMBMyAdapter extends BaseAdapter {
         View rootView = LayoutInflater.from(context).inflate(R.layout.adapter_pmb_my, viewGroup, false);
         CircleImageView circleImageView = rootView.findViewById(R.id.tuan_cover);
         TextView nameV = rootView.findViewById(R.id.tuan_name);
+        TextView infoV = rootView.findViewById(R.id.tuan_info);
 
         Tuan tuan = tuans.get(i);
 
         Picasso.with(context).load(Utils.Res_HOST+tuan.logo).placeholder(R.drawable.ic_empty_zhihu).into(circleImageView);
         nameV.setText(tuan.name);
-
+        infoV.setText(tuan.description);
         return rootView;
     }
 }

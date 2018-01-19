@@ -10,20 +10,22 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import xsk.com.wtuan.R;
 import xsk.com.wtuan.activity.TuanActivity;
+import xsk.com.wtuan.adapter.TuanAdapter;
 import xsk.com.wtuan.adapter.PMBMyAdapter;
 import xsk.com.wtuan.bean.RequestResultBean;
+import xsk.com.wtuan.bean.albumgroud.TuanGroup;
+import xsk.com.wtuan.bean.albumgroud.TuanGroupBean;
 import xsk.com.wtuan.bean.tuan.RequestTuanResultBean;
 import xsk.com.wtuan.net.JsonResultRequest;
 import xsk.com.wtuan.net.request.TuanListRequest;
+import xsk.com.wtuan.net.request.album.UserTuanList;
 import xsk.com.wtuan.utils.Utils;
 
 
@@ -33,7 +35,7 @@ import xsk.com.wtuan.utils.Utils;
 public class PMBMyFragment extends Fragment {
     ListView listView;
     GridView gridView;
-    SimpleAdapter grideViewAdapter;
+    TuanAdapter albumAdapter;
 
     private PMBMyAdapter adapter;
 
@@ -41,24 +43,43 @@ public class PMBMyFragment extends Fragment {
 
 
     protected void pullWTuan() {
+        final List<Map<String, Object>> gList = new ArrayList<>();
 
-        if (grideViewAdapter == null) {
-            List<Map<String, Object>> gList = new ArrayList<>();
+        if (albumAdapter == null) {
             String [] from ={"image","name"};
             int [] to = {R.id.image,R.id.name};
 
-            grideViewAdapter = new SimpleAdapter(getContext(), gList, R.layout.adapter_pmb_gride, from, to);
-            this.gridView.setAdapter(grideViewAdapter);
-            grideViewAdapter.notifyDataSetChanged();
+            albumAdapter = new TuanAdapter(getContext());
+            this.gridView.setAdapter(albumAdapter);
             gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    HashMap<String, Object> item = (HashMap<String, Object>) adapterView.getItemAtPosition(i);
+                    TuanGroup item = (TuanGroup) adapterView.getItemAtPosition(i);
                     Intent intent = new Intent(getContext(), TuanActivity.class);
                     getActivity().startActivity(intent);
                 }
             });
         }
+        UserTuanList userTuanList = new UserTuanList();
+        userTuanList.get(TuanGroupBean.class, new JsonResultRequest.OnBeanResult() {
+            @Override
+            public void onSuccess(RequestResultBean bean) {
+                final TuanGroupBean albumGroupBean = (TuanGroupBean) bean;
+                if (albumGroupBean != null) {
+                    Utils.runOnUiThread(getContext(), new Runnable() {
+                        @Override
+                        public void run() {
+                            albumAdapter.add(albumGroupBean.data.data);
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+
+            }
+        });
 
         TuanListRequest request = new TuanListRequest();
         request.get(RequestTuanResultBean.class, new JsonResultRequest.OnBeanResult() {
