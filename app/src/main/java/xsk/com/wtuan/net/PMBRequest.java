@@ -30,7 +30,7 @@ public abstract class PMBRequest {
         return "&api_token=91e65d721bc7fe4d4decd764c32d23db";
     }
 
-    protected void get(  final Result result) {
+    protected void get(final Result result) {
         result.onStart();
         OkHttpClient client = new OkHttpClient();
 
@@ -54,19 +54,22 @@ public abstract class PMBRequest {
             }
         });
     }
+
     /**
      * http://127.0.0.1:1004/api/v1/register/doReg
-      * @param paramaters
+     *
+     * @param paramaters
      * @param result
      */
-    protected void get(  Map<String, String> paramaters, final Result result) {
+    protected void get(Map<String, String> paramaters, final Result result) {
         result.onStart();
         ArrayList<String> p = new ArrayList<>();
         for (String key :
                 paramaters.keySet()) {
             p.add(key + "=" + paramaters.get(key));
         }
-        String append = join("&", (String[]) p.toArray());
+        p.add("api_token=" + token);
+        String append = join("&",   p.toArray());
         OkHttpClient client = new OkHttpClient();
         final Request request = new Request.Builder()
                 .url(API + apiSmallURI() + "?" + append)
@@ -84,7 +87,7 @@ public abstract class PMBRequest {
         });
     }
 
-    protected static String join(String join, String[] strAry) {
+    protected static String join(String join, Object[] strAry) {
         StringBuffer sb = new StringBuffer();
         for (int i = 0; i < strAry.length; i++) {
             if (i == (strAry.length - 1)) {
@@ -99,10 +102,11 @@ public abstract class PMBRequest {
 
     /**
      * http://127.0.0.1:1004/api/v1/register/doReg
+     *
      * @param paramaters
      * @param result
      */
-    protected void post(  Map<String, String> paramaters, final Result result) {
+    protected void post(Map<String, String> paramaters, final Result result) {
         result.onStart();
         FormBody.Builder builder = new FormBody.Builder();
         for (String key :

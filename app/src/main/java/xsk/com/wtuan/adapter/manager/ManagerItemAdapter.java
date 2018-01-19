@@ -13,7 +13,7 @@ import xsk.com.wtuan.R;
  */
 
 public class ManagerItemAdapter extends BaseAdapter {
-    Context context;
+  protected   Context context;
 
     public ManagerItemAdapter(Context context) {
         this.context = context;
